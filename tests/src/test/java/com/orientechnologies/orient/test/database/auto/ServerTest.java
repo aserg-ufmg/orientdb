@@ -45,7 +45,7 @@ public class ServerTest extends DocumentDBBaseTest {
 
   @Test
   public void testDbExists() throws IOException {
-    Assert.assertTrue(ODatabaseHelper.existsDatabase(url));
+    Assert.assertTrue(ODatabaseHelper.existsDb(url));
   }
 
   @Test

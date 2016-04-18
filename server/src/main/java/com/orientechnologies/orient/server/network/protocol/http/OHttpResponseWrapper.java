@@ -90,7 +90,7 @@ public class OHttpResponseWrapper {
   }
 
   public String getHttpVersion() {
-    return response.httpVersion;
+    return response.data.httpVersion;
   }
 
   public String[] getAdditionalResponseHeaders() {

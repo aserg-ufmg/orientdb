@@ -54,21 +54,17 @@ public class OHttpResponse {
   public static final String   JSON_FORMAT       = "type,indent:-1,rid,version,attribSameRow,class,keepTypes,alwaysFetchEmbeddedDocuments";
   public static final char[]   URL_SEPARATOR     = { '/' };
   private static final Charset utf8              = Charset.forName("utf8");
-  public final String          httpVersion;
   private final OutputStream   out;
   public String                headers;
   public String[]              additionalHeaders;
   public String                characterSet;
   public String                contentType;
-  public String                serverInfo;
-
-  public String                sessionId;
   public String                callbackFunction;
   public String                contentEncoding;
   public boolean               sendStarted       = false;
   public String                content;
-  public int                   code;
-  public boolean               keepAlive         = true;
+  public OHttpResponseData data = new OHttpResponseData();
+public boolean               keepAlive         = true;
   public boolean               jsonErrorResponse = true;
   public OClientConnection     connection;
 
@@ -76,11 +72,11 @@ public class OHttpResponse {
       final String iResponseCharSet, final String iServerInfo, final String iSessionId, final String iCallbackFunction,
       final boolean iKeepAlive, OClientConnection connection) {
     out = iOutStream;
-    httpVersion = iHttpVersion;
+    data.httpVersion = iHttpVersion;
     additionalHeaders = iAdditionalHeaders;
     characterSet = iResponseCharSet;
-    serverInfo = iServerInfo;
-    sessionId = iSessionId;
+    data.serverInfo = iServerInfo;
+    data.sessionId = iSessionId;
     callbackFunction = iCallbackFunction;
     keepAlive = iKeepAlive;
     this.connection = connection;
@@ -108,8 +104,8 @@ public class OHttpResponse {
 
     final boolean empty = content == null || content.length() == 0;
 
-    if (this.code > 0) {
-      writeStatus(this.code, iReason);
+    if (this.data.code > 0) {
+      writeStatus(this.data.code, iReason);
     } else {
       writeStatus(empty && iCode == 200 ? 204 : iCode, iReason);
     }
@@ -119,8 +115,8 @@ public class OHttpResponse {
       writeLine(iHeaders);
     }
 
-    if (sessionId != null)
-      writeLine("Set-Cookie: " + OHttpUtils.OSESSIONID + "=" + sessionId + "; Path=/; HttpOnly");
+    if (data.sessionId != null)
+      writeLine("Set-Cookie: " + OHttpUtils.OSESSIONID + "=" + data.sessionId + "; Path=/; HttpOnly");
 
     byte[] binaryContent = null;
     if (!empty) {
@@ -143,7 +139,7 @@ public class OHttpResponse {
   }
 
   public void writeStatus(final int iStatus, final String iReason) throws IOException {
-    writeLine(httpVersion + " " + iStatus + " " + iReason);
+    writeLine(data.httpVersion + " " + iStatus + " " + iReason);
   }
 
   public void writeHeaders(final String iContentType) throws IOException {
@@ -157,7 +153,7 @@ public class OHttpResponse {
 
     writeLine("Date: " + new Date());
     writeLine("Content-Type: " + iContentType + "; charset=" + characterSet);
-    writeLine("Server: " + serverInfo);
+    writeLine("Server: " + data.serverInfo);
     writeLine("Connection: " + (iKeepAlive ? "Keep-Alive" : "close"));
 
     // SET CONTENT ENCDOING
@@ -544,7 +540,7 @@ public class OHttpResponse {
   }
 
   public void setSessionId(String sessionId) {
-    this.sessionId = sessionId;
+    this.data.sessionId = sessionId;
   }
 
   public String getContent() {
@@ -556,11 +552,11 @@ public class OHttpResponse {
   }
 
   public int getCode() {
-    return code;
+    return data.code;
   }
 
   public void setCode(int code) {
-    this.code = code;
+    this.data.code = code;
   }
 
   public void setJsonErrorResponse(boolean jsonErrorResponse) {

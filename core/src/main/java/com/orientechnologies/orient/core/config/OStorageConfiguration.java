@@ -99,6 +99,8 @@ public class OStorageConfiguration implements OSerializableStream {
   private volatile boolean                           strictSQL;
   private volatile boolean                           txRequiredForSQLGraphOperations;
 
+protected String networkRecordSerializer;
+
   public OStorageConfiguration(final OStorage iStorage) {
     storage = iStorage;
     fileTemplate = new OStorageSegmentConfiguration();

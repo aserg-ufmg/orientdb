@@ -20,12 +20,12 @@
 package com.orientechnologies.orient.client.db;
 
 import com.orientechnologies.common.parser.OSystemVariableResolver;
-import com.orientechnologies.orient.client.remote.OEngineRemote;
 import com.orientechnologies.orient.client.remote.OServerAdmin;
 import com.orientechnologies.orient.core.OConstants;
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.exception.OConfigurationException;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public class ODatabaseHelper {
   }
 
   public static void createDatabase(ODatabase database, final String url, String directory, String type) throws IOException {
-    if (url.startsWith(OEngineRemote.NAME)) {
+    if (url.startsWith(OEngineAbstract.NAME)) {
       new OServerAdmin(url).connect("root", getServerRootPassword(directory)).createDatabase("document", type).close();
     } else {
       database.create();
@@ -56,14 +56,14 @@ public class ODatabaseHelper {
 
   @Deprecated
   public static void deleteDatabase(final ODatabase database, final String directory, String storageType) throws IOException {
-    dropDatabase(database, directory, storageType);
+    dropDb(database, directory, storageType);
   }
 
   public static void dropDatabase(final ODatabase database, String storageType) throws IOException {
-    dropDatabase(database, "server", storageType);
+    dropDb(database, "server", storageType);
   }
 
-  public static void dropDatabase(final ODatabase database, final String directory, String storageType) throws IOException {
+  public static void dropDb(final ODatabase database, final String directory, String storageType) throws IOException {
     if (existsDatabase(database, storageType)) {
       if (database.getURL().startsWith("remote:")) {
         database.activateOnCurrentThread();
@@ -93,7 +93,7 @@ public class ODatabaseHelper {
     return database.exists();
   }
 
-  public static boolean existsDatabase(final String url) throws IOException {
+  public static boolean existsDb(final String url) throws IOException {
     if (url.startsWith("remote")) {
       OServerAdmin admin = new OServerAdmin(url).connect("root", getServerRootPassword());
       boolean exist = admin.existsDatabase();
@@ -103,7 +103,7 @@ public class ODatabaseHelper {
     return new ODatabaseDocumentTx(url).exists();
   }
 
-  public static void freezeDatabase(final ODatabase database) throws IOException {
+  public static void freezeDb(final ODatabase database) throws IOException {
     database.activateOnCurrentThread();
     if (database.getURL().startsWith("remote")) {
       final OServerAdmin serverAdmin = new OServerAdmin(database.getURL());
@@ -114,7 +114,7 @@ public class ODatabaseHelper {
     }
   }
 
-  public static void releaseDatabase(final ODatabase database) throws IOException {
+  public static void releaseDb(final ODatabase database) throws IOException {
     database.activateOnCurrentThread();
     if (database.getURL().startsWith("remote")) {
       final OServerAdmin serverAdmin = new OServerAdmin(database.getURL());

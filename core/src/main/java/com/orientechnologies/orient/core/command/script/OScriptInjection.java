@@ -31,4 +31,6 @@ public interface OScriptInjection {
   public void bind(Bindings binding);
 
   public void unbind(Bindings binding);
+
+String getName();
 }

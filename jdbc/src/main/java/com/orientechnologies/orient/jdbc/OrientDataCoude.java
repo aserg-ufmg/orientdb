@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-public class OrientDataSource implements DataSource {
+public class OrientDataCoude implements DataSource {
 
   static {
     try {
@@ -47,7 +47,7 @@ public class OrientDataSource implements DataSource {
   private PrintWriter logger;
   private int         loginTimeout;
 
-  public OrientDataSource() {
+  public OrientDataCoude() {
     info = new Properties();
     info.setProperty("db.usePool", "TRUE");
     info.setProperty("db.pool.min", "1");
@@ -62,7 +62,7 @@ public class OrientDataSource implements DataSource {
    * @param password
    * @param info
    */
-  public OrientDataSource(String url, String username, String password, Properties info) {
+  public OrientDataCoude(String url, String username, String password, Properties info) {
     this.url = url;
     this.username = username;
     this.password = password;

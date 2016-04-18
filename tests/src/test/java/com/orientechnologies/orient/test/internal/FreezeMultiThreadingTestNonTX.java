@@ -435,7 +435,7 @@ public class FreezeMultiThreadingTestNonTX {
       try {
         countDownLatch.await();
         while (createCounter.get() < DOCUMENT_COUNT) {
-          ODatabaseHelper.freezeDatabase(database);
+          ODatabaseHelper.freezeDb(database);
           database.open("admin", "admin");
 
           final List<ODocument> beforeNonTxDocuments = database.query(new OSQLSynchQuery<Object>("select from "
@@ -459,7 +459,7 @@ public class FreezeMultiThreadingTestNonTX {
 
             database.close();
             System.out.println("Release DB - nonTx : " + afterNonTxDocuments.size() + " Tx : " + afterTxDocuments.size());
-            ODatabaseHelper.releaseDatabase(database);
+            ODatabaseHelper.releaseDb(database);
           }
           Thread.sleep(10000);
         }
@@ -489,7 +489,7 @@ public class FreezeMultiThreadingTestNonTX {
       System.out.println("Recreating database");
       if (ODatabaseHelper.existsDatabase(db, "plocal")) {
         db.setProperty("security", Boolean.FALSE);
-        ODatabaseHelper.dropDatabase(db, URL, "plocal");
+        ODatabaseHelper.dropDb(db, URL, "plocal");
       }
       ODatabaseHelper.createDatabase(db, URL);
       db.close();

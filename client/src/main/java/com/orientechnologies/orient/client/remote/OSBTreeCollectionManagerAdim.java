@@ -46,7 +46,7 @@ import com.orientechnologies.orient.enterprise.channel.binary.OChannelBinaryProt
 /**
  * @author Artem Orobets (enisher-at-gmail.com)
  */
-public class OSBTreeCollectionManagerRemote extends OSBTreeCollectionManagerAbstract implements OOrientStartupListener,
+public class OSBTreeCollectionManagerAdim extends OSBTreeCollectionManagerAbstract implements OOrientStartupListener,
     OOrientShutdownListener {
 
   private final OCollectionNetworkSerializer                      networkSerializer;
@@ -54,7 +54,7 @@ public class OSBTreeCollectionManagerRemote extends OSBTreeCollectionManagerAbst
 
   private volatile ThreadLocal<Map<UUID, WeakReference<ORidBag>>> pendingCollections    = new PendingCollectionsThreadLocal();
 
-  public OSBTreeCollectionManagerRemote() {
+  public OSBTreeCollectionManagerAdim() {
     super();
     networkSerializer = new OCollectionNetworkSerializer();
 
@@ -62,7 +62,7 @@ public class OSBTreeCollectionManagerRemote extends OSBTreeCollectionManagerAbst
     Orient.instance().registerWeakOrientShutdownListener(this);
   }
 
-  public OSBTreeCollectionManagerRemote(OCollectionNetworkSerializer networkSerializer) {
+  public OSBTreeCollectionManagerAdim(OCollectionNetworkSerializer networkSerializer) {
     super();
     this.networkSerializer = networkSerializer;
 
@@ -82,7 +82,7 @@ public class OSBTreeCollectionManagerRemote extends OSBTreeCollectionManagerAbst
   }
 
   @Override
-  protected OSBTreeBonsaiRemote<OIdentifiable, Integer> createTree(int clusterId) {
+  protected OSBTreeRemote<OIdentifiable, Integer> createTree(int clusterId) {
     if (remoteCreationAllowed) {
       OStorageRemote storage = (OStorageRemote) ODatabaseRecordThreadLocal.INSTANCE.get().getStorage().getUnderlying();
       OChannelBinaryAsynchClient client = null;
@@ -102,7 +102,7 @@ public class OSBTreeCollectionManagerRemote extends OSBTreeCollectionManagerAbst
           OBinarySerializer<OIdentifiable> keySerializer = OLinkSerializer.INSTANCE;
           OBinarySerializer<Integer> valueSerializer = OIntegerSerializer.INSTANCE;
 
-          return new OSBTreeBonsaiRemote<OIdentifiable, Integer>(pointer, keySerializer, valueSerializer);
+          return new OSBTreeRemote<OIdentifiable, Integer>(pointer, keySerializer, valueSerializer);
         } catch (Exception e2) {
           storage.handleException(client, "Can't create sb-tree bonsai.", e2);
         }
@@ -117,7 +117,7 @@ public class OSBTreeCollectionManagerRemote extends OSBTreeCollectionManagerAbst
     OBinarySerializer<OIdentifiable> keySerializer = OLinkSerializer.INSTANCE;
     OBinarySerializer<Integer> valueSerializer = OIntegerSerializer.INSTANCE;
 
-    return new OSBTreeBonsaiRemote<OIdentifiable, Integer>(collectionPointer, keySerializer, valueSerializer);
+    return new OSBTreeRemote<OIdentifiable, Integer>(collectionPointer, keySerializer, valueSerializer);
   }
 
   @Override

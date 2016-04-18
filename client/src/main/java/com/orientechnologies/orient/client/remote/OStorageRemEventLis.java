@@ -38,13 +38,13 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class OStorageRemoteAsynchEventListener implements ORemoteServerEventListener {
+public class OStorageRemEventLis implements ORemoteServerEventListener {
 
   private Map<Integer, OLiveResultListener> liveQueryListeners = new ConcurrentHashMap<Integer, OLiveResultListener>();
 
   private OStorageRemote                 storage;
 
-  public OStorageRemoteAsynchEventListener(final OStorageRemote storage) {
+  public OStorageRemEventLis(final OStorageRemote storage) {
     this.storage = storage;
   }
 
@@ -106,9 +106,10 @@ public class OStorageRemoteAsynchEventListener implements ORemoteServerEventList
     return tmp;
   }
 
-  public OStorageRemote getStorage() {
-    return storage;
-  }
+  @Override
+//public OStorageRemote getStorage() {
+  //  return storage;
+  //}
 
   public void registerLiveListener(Integer id, OLiveResultListener listener) {
     this.liveQueryListeners.put(id, listener);
@@ -117,4 +118,10 @@ public class OStorageRemoteAsynchEventListener implements ORemoteServerEventList
   public void unregisterLiveListener(Integer id) {
     this.liveQueryListeners.remove(id);
   }
+
+//@Override
+//public OStorageRemote getStorage() {
+	// TODO Auto-generated method stub
+//	return null;
+//}
 }

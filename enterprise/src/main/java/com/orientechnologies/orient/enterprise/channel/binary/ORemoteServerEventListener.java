@@ -19,6 +19,7 @@
  */
 package com.orientechnologies.orient.enterprise.channel.binary;
 
+import com.orientechnologies.orient.client.remote.OStorageRemote;
 import com.orientechnologies.orient.core.sql.query.OLiveResultListener;
 
 /**
@@ -33,5 +34,7 @@ public interface ORemoteServerEventListener {
   public void registerLiveListener(Integer id, OLiveResultListener listener);
 
   public void unregisterLiveListener(Integer id);
+
+OStorageRemote getStorage();
 
 }

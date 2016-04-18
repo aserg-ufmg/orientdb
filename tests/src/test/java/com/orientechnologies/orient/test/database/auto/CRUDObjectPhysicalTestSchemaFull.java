@@ -24,9 +24,9 @@ import org.testng.annotations.*;
 import org.testng.annotations.Optional;
 
 import com.orientechnologies.common.log.OLogManager;
-import com.orientechnologies.orient.client.remote.OEngineRemote;
 import com.orientechnologies.orient.core.db.object.OLazyObjectSetInterface;
 import com.orientechnologies.orient.core.db.record.*;
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.exception.ODatabaseException;
 import com.orientechnologies.orient.core.exception.OQueryParsingException;
 import com.orientechnologies.orient.core.exception.OSerializationException;
@@ -80,16 +80,16 @@ public class CRUDObjectPhysicalTestSchemaFull extends ObjectDBBaseTest {
 
     database.setAutomaticSchemaGeneration(true);
     database.getEntityManager().registerEntityClasses("com.orientechnologies.orient.test.domain.business");
-    if (url.startsWith(OEngineRemote.NAME)) {
+    if (url.startsWith(OEngineAbstract.NAME)) {
       database.getMetadata().reload();
     }
     database.getEntityManager().registerEntityClasses("com.orientechnologies.orient.test.domain.base");
-    if (url.startsWith(OEngineRemote.NAME)) {
+    if (url.startsWith(OEngineAbstract.NAME)) {
       database.getMetadata().reload();
     }
     database.setAutomaticSchemaGeneration(false);
     database.getEntityManager().registerEntityClasses("com.orientechnologies.orient.test.domain.whiz");
-    if (url.startsWith(OEngineRemote.NAME)) {
+    if (url.startsWith(OEngineAbstract.NAME)) {
       database.getMetadata().reload();
     }
 

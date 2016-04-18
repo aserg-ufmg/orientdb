@@ -34,7 +34,6 @@ import java.util.Map;
  * @author Luca Garulli
  */
 public class OEngineRemote extends OEngineAbstract {
-  public static final String                         NAME           = "remote";
   protected static final Map<String, OStorageRemote> sharedStorages = new HashMap<String, OStorageRemote>();
   protected final ORemoteConnectionManager           connectionManager;
 

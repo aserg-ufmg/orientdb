@@ -36,13 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class OJDBCExtractor extends OAbstractExtractor {
-  protected String       url;
-  protected String       userName;
-  protected String       userPassword;
+public class OJDBCExtractor extends OextractorSuper {
   protected String       query;
-  protected String       queryCount;
-
   protected String       driverClass;
   protected Connection   conn;
   protected Statement    stm;
@@ -240,10 +235,5 @@ public class OJDBCExtractor extends OAbstractExtractor {
         + "{query:{optional:false,description:'Query that extract records'}},"
         + "{queryCount:{optional:true,description:'Query that returns the count to have a correct progress status'}}],"
         + "output:'ODocument'}");
-  }
-
-  @Override
-  public String getName() {
-    return "jdbc";
   }
 }

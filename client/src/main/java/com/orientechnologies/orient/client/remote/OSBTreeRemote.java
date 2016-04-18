@@ -42,12 +42,12 @@ import com.orientechnologies.orient.enterprise.channel.binary.OChannelBinaryProt
  * 
  * @author Artem Orobets (enisher-at-gmail.com)
  */
-public class OSBTreeBonsaiRemote<K, V> implements OSBTreeBonsai<K, V> {
+public class OSBTreeRemote<K, V> implements OSBTreeBonsai<K, V> {
   private final OBonsaiCollectionPointer treePointer;
   private final OBinarySerializer<K>     keySerializer;
   private final OBinarySerializer<V>     valueSerializer;
 
-  public OSBTreeBonsaiRemote(OBonsaiCollectionPointer treePointer, OBinarySerializer<K> keySerializer,
+  public OSBTreeRemote(OBonsaiCollectionPointer treePointer, OBinarySerializer<K> keySerializer,
       OBinarySerializer<V> valueSerializer) {
     this.treePointer = treePointer;
     this.keySerializer = keySerializer;

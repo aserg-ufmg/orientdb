@@ -54,7 +54,7 @@ public abstract class OServerCommandAuthenticatedServerAbstract extends OServerC
       throws IOException {
     if (checkGuestAccess()) {
       // GUEST ACCESSES TO THE RESOURCE: OK ALSO WITHOUT AN AUTHENTICATION.
-      iResponse.sessionId = null;
+      iResponse.data.sessionId = null;
       return true;
     }
 

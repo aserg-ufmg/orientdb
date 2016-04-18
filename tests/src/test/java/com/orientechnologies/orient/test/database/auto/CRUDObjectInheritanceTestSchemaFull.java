@@ -16,11 +16,11 @@
 package com.orientechnologies.orient.test.database.auto;
 
 import com.orientechnologies.orient.client.db.ODatabaseHelper;
-import com.orientechnologies.orient.client.remote.OEngineRemote;
 import com.orientechnologies.orient.core.command.OCommandOutputListener;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.db.tool.ODatabaseExport;
 import com.orientechnologies.orient.core.db.tool.ODatabaseImport;
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
@@ -137,11 +137,11 @@ public class CRUDObjectInheritanceTestSchemaFull extends ObjectDBBaseTest {
     database.getMetadata().getSchema().synchronizeSchema();
     database.setAutomaticSchemaGeneration(true);
     database.getEntityManager().registerEntityClasses("com.orientechnologies.orient.test.domain.business");
-    if (url.startsWith(OEngineRemote.NAME)) {
+    if (url.startsWith(OEngineAbstract.NAME)) {
       database.getMetadata().reload();
     }
     database.getEntityManager().registerEntityClasses("com.orientechnologies.orient.test.domain.base");
-    if (url.startsWith(OEngineRemote.NAME)) {
+    if (url.startsWith(OEngineAbstract.NAME)) {
       database.getMetadata().reload();
     }
     startRecordNumber = database.countClusterElements("Company");
@@ -279,7 +279,7 @@ public class CRUDObjectInheritanceTestSchemaFull extends ObjectDBBaseTest {
   @Test(dependsOnMethods = "testIdFieldInheritanceFirstSubClass")
   public void testSchemaGeneration() {
     database.getMetadata().getSchema().generateSchema("com.orientechnologies.orient.test.domain.base");
-    if (url.startsWith(OEngineRemote.NAME)) {
+    if (url.startsWith(OEngineAbstract.NAME)) {
       database.getMetadata().reload();
     }
     OClass musicianClass = database.getMetadata().getSchema().getClass(Musician.class);
@@ -297,7 +297,7 @@ public class CRUDObjectInheritanceTestSchemaFull extends ObjectDBBaseTest {
     database.setAutomaticSchemaGeneration(true);
 
     database.getEntityManager().registerEntityClasses("com.orientechnologies.orient.test.domain.schemageneration");
-    if (url.startsWith(OEngineRemote.NAME)) {
+    if (url.startsWith(OEngineAbstract.NAME)) {
       database.getMetadata().reload();
     }
     OClass testSchemaClass = database.getMetadata().getSchema().getClass(JavaTestSchemaGeneration.class);
@@ -359,7 +359,7 @@ public class CRUDObjectInheritanceTestSchemaFull extends ObjectDBBaseTest {
       database.getMetadata().getSchema().generateSchema(Musician.class);
       database.getMetadata().getSchema().generateSchema(JavaTestSchemaGeneration.class);
       database.getMetadata().getSchema().generateSchema(TestSchemaGenerationChild.class);
-      if (url.startsWith(OEngineRemote.NAME)) {
+      if (url.startsWith(OEngineAbstract.NAME)) {
         database.getMetadata().reload();
       }
     } catch (Exception e) {

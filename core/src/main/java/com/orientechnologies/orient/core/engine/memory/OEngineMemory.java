@@ -28,8 +28,6 @@ import com.orientechnologies.orient.core.storage.OStorage;
 import com.orientechnologies.orient.core.storage.impl.memory.ODirectMemoryStorage;
 
 public class OEngineMemory extends OEngineAbstract {
-  public static final String NAME = "memory";
-
   public OEngineMemory() {
   }
 

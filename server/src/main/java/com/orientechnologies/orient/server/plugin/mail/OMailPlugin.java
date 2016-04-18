@@ -53,9 +53,9 @@ public class OMailPlugin extends OServerPluginAbstract implements OScriptInjecti
    private static final String       CONFIG_PROFILE_PREFIX = "profile.";
    private static final String       CONFIG_MAIL_PREFIX    = "mail.";
 
-   private Map<String, OMailProfile> profiles              = new HashMap<String, OMailProfile>();
+   private OMailPluginData data = new OMailPluginData(new HashMap<String, OMailProfile>());
 
-   public OMailPlugin() {
+public OMailPlugin() {
      Orient.instance().getScriptManager().registerInjection(this);
    }
 
@@ -75,10 +75,10 @@ public class OMailPlugin extends OServerPluginAbstract implements OScriptInjecti
          final String profileName = parts.substring(0, pos);
          final String profileParam = parts.substring(pos + 1);
 
-         OMailProfile profile = profiles.get(profileName);
+         OMailProfile profile = data.profiles.get(profileName);
          if (profile == null) {
            profile = new OMailProfile();
-           profiles.put(profileName, profile);
+           data.profiles.put(profileName, profile);
          }
 
          if (profileParam.startsWith(CONFIG_MAIL_PREFIX)) {
@@ -87,7 +87,7 @@ public class OMailPlugin extends OServerPluginAbstract implements OScriptInjecti
        }
      }
 
-     OLogManager.instance().info(this, "Installing Mail plugin, loaded %d profile(s): %s", profiles.size(), profiles.keySet());
+     OLogManager.instance().info(this, "Installing Mail plugin, loaded %d profile(s): %s", data.profiles.size(), data.profiles.keySet());
    }
 
    /**
@@ -105,7 +105,7 @@ public class OMailPlugin extends OServerPluginAbstract implements OScriptInjecti
 
      final String profileName = (String) iMessage.get("profile");
 
-     final OMailProfile profile = profiles.get(profileName);
+     final OMailProfile profile = data.profiles.get(profileName);
      if (profile == null)
        throw new IllegalArgumentException("Mail profile '" + profileName + "' is not configured on server");
 
@@ -199,15 +199,15 @@ public class OMailPlugin extends OServerPluginAbstract implements OScriptInjecti
    }
 
    public Set<String> getProfileNames() {
-     return profiles.keySet();
+     return data.profiles.keySet();
    }
 
    public OMailProfile getProfile(final String iName) {
-     return profiles.get(iName);
+     return data.profiles.get(iName);
    }
 
    public OMailPlugin registerProfile(final String iName, final OMailProfile iProfile) {
-     profiles.put(iName, iProfile);
+     data.profiles.put(iName, iProfile);
      return this;
    }
 

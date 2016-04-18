@@ -46,7 +46,7 @@ public class OSBTreeCollectionManagerRemoteTest {
 
   @Test(enabled = false)
   public void testCreateTree() throws Exception {
-    OSBTreeCollectionManagerRemote remoteManager = new OSBTreeCollectionManagerRemote(networkSerializerMock);
+    OSBTreeCollectionManagerAdim remoteManager = new OSBTreeCollectionManagerAdim(networkSerializerMock);
     ODatabaseRecordThreadLocal.INSTANCE.set(dbMock);
 
     when(dbMock.getStorage()).thenReturn(storageMock);
@@ -55,7 +55,7 @@ public class OSBTreeCollectionManagerRemoteTest {
     when(networkSerializerMock.readCollectionPointer(Mockito.<OChannelBinaryAsynchClient> any())).thenReturn(
         new OBonsaiCollectionPointer(EXPECTED_FILE_ID, EXPECTED_ROOT_POINTER));
 
-    OSBTreeBonsaiRemote<OIdentifiable, Integer> tree = remoteManager.createTree(EXPECTED_CLUSTER_ID);
+    OSBTreeRemote<OIdentifiable, Integer> tree = remoteManager.createTree(EXPECTED_CLUSTER_ID);
 
     assertNotNull(tree);
     assertEquals(tree.getFileId(), EXPECTED_FILE_ID);
@@ -76,7 +76,7 @@ public class OSBTreeCollectionManagerRemoteTest {
 
   @Test
   public void testLoadTree() throws Exception {
-    OSBTreeCollectionManagerRemote remoteManager = new OSBTreeCollectionManagerRemote(networkSerializerMock);
+    OSBTreeCollectionManagerAdim remoteManager = new OSBTreeCollectionManagerAdim(networkSerializerMock);
 
     OSBTreeBonsai<OIdentifiable, Integer> tree = remoteManager.loadTree(new OBonsaiCollectionPointer(EXPECTED_FILE_ID,
         EXPECTED_ROOT_POINTER));

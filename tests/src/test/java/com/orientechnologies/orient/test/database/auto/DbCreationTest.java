@@ -16,13 +16,13 @@
 package com.orientechnologies.orient.test.database.auto;
 
 import com.orientechnologies.orient.client.db.ODatabaseHelper;
-import com.orientechnologies.orient.client.remote.OEngineRemote;
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentPool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.exception.OStorageException;
 import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.OSecurityNull;
@@ -71,20 +71,20 @@ public class DbCreationTest extends ObjectDBBaseTest {
   }
 
   public void testDbCreationNoSecurity() throws IOException {
-    if (!url.startsWith(OEngineRemote.NAME)) {
+    if (!url.startsWith(OEngineAbstract.NAME)) {
       ODatabaseDocument db = new ODatabaseDocumentTx(url);
       db.setProperty("security", OSecurityNull.class);
 
-      ODatabaseHelper.dropDatabase(db, "server", getStorageType());
+      ODatabaseHelper.dropDb(db, "server", getStorageType());
       ODatabaseHelper.createDatabase(db, url, getStorageType());
-      ODatabaseHelper.dropDatabase(db, "server", getStorageType());
+      ODatabaseHelper.dropDb(db, "server", getStorageType());
 
       database = new OObjectDatabaseTx(url);
       database.setProperty("security", OSecurityNull.class);
 
-      ODatabaseHelper.dropDatabase(database, "server", getStorageType());
+      ODatabaseHelper.dropDb(database, "server", getStorageType());
       ODatabaseHelper.createDatabase(database, url, getStorageType());
-      ODatabaseHelper.dropDatabase(database, "server", getStorageType());
+      ODatabaseHelper.dropDb(database, "server", getStorageType());
     }
   }
 
@@ -96,8 +96,8 @@ public class DbCreationTest extends ObjectDBBaseTest {
 
   @Test(dependsOnMethods = { "testDbCreationNoSecurity" })
   public void testDbCreationDefault() throws IOException {
-    if (ODatabaseHelper.existsDatabase(url))
-      ODatabaseHelper.dropDatabase(new OObjectDatabaseTx(url), url, getStorageType());
+    if (ODatabaseHelper.existsDb(url))
+      ODatabaseHelper.dropDb(new OObjectDatabaseTx(url), url, getStorageType());
 
     ODatabaseHelper.createDatabase(new OObjectDatabaseTx(url), url, getStorageType());
   }

@@ -22,7 +22,7 @@ package com.orientechnologies.orient.etl;
 
 import com.orientechnologies.orient.core.command.OCommandContext;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.etl.extractor.OAbstractExtractor;
+import com.orientechnologies.orient.etl.extractor.OextractorSuper;
 
 import java.io.Reader;
 import java.util.Random;
@@ -32,7 +32,7 @@ import java.util.Random;
  * 
  * @author Luca Garulli on 27/11/14.
  */
-public class OETLStubRandomExtractor extends OAbstractExtractor {
+public class OETLStubRandomExtractor extends OextractorSuper {
   private int  fields;
   private long items;
   private int  delay   = 0;

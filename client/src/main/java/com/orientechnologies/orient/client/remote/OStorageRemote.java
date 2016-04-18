@@ -43,6 +43,7 @@ import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.db.record.ORecordOperation;
 import com.orientechnologies.orient.core.db.record.ridbag.sbtree.OBonsaiCollectionPointer;
 import com.orientechnologies.orient.core.db.record.ridbag.sbtree.OSBTreeCollectionManager;
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.exception.OCommandExecutionException;
 import com.orientechnologies.orient.core.exception.ODatabaseException;
 import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
@@ -142,12 +143,12 @@ public class OStorageRemote extends OStorageAbstract implements OStorageProxy {
     clientConfiguration = new OContextConfiguration();
     connectionRetry = clientConfiguration.getValueAsInteger(OGlobalConfiguration.NETWORK_SOCKET_RETRY);
     connectionRetryDelay = clientConfiguration.getValueAsInteger(OGlobalConfiguration.NETWORK_SOCKET_RETRY_DELAY);
-    asynchEventListener = new OStorageRemoteAsynchEventListener(this);
+    asynchEventListener = new OStorageRemEventLis(this);
     parseServerURLs();
 
     asynchExecutor = Executors.newSingleThreadScheduledExecutor();
 
-    engine = (OEngineRemote) Orient.instance().getEngine(OEngineRemote.NAME);
+    engine = (OEngineRemote) Orient.instance().getEngine(OEngineAbstract.NAME);
   }
 
   @Override
@@ -219,7 +220,7 @@ public class OStorageRemote extends OStorageAbstract implements OStorageProxy {
       // POST OPEN
       openRemoteDatabase();
 
-      final OStorageConfiguration storageConfiguration = new OStorageRemoteConfiguration(this, recordFormat);
+      final OStorageConfiguration storageConfiguration = new OStorageConfingRem(this, recordFormat);
       storageConfiguration.load();
 
       configuration = storageConfiguration;
@@ -1715,7 +1716,7 @@ public class OStorageRemote extends OStorageAbstract implements OStorageProxy {
 
   @Override
   public String getURL() {
-    return OEngineRemote.NAME + ":" + url;
+    return OEngineAbstract.NAME + ":" + url;
   }
 
   public String getClientId() {
@@ -1733,12 +1734,12 @@ public class OStorageRemote extends OStorageAbstract implements OStorageProxy {
 
   @Override
   public String getType() {
-    return OEngineRemote.NAME;
+    return OEngineAbstract.NAME;
   }
 
   @Override
-  public Class<OSBTreeCollectionManagerRemote> getCollectionManagerClass() {
-    return OSBTreeCollectionManagerRemote.class;
+  public Class<OSBTreeCollectionManagerAdim> getCollectionManagerClass() {
+    return OSBTreeCollectionManagerAdim.class;
   }
 
   public OEngineRemote getEngine() {

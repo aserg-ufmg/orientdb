@@ -81,10 +81,8 @@ public class OServer {
   private final CountDownLatch                             startupLatch           = new CountDownLatch(1);
   protected ReentrantLock                                  lock                   = new ReentrantLock();
   protected volatile boolean                               running                = false;
-  protected OServerConfigurationLoaderXml                  configurationLoader;
-  protected OServerConfiguration                           configuration;
-  protected OContextConfiguration                          contextConfiguration;
-  protected OServerShutdownHook                            shutdownHook;
+  protected OServerConfigData data = new OServerConfigData();
+protected OServerShutdownHook                            shutdownHook;
   protected Map<String, Class<? extends ONetworkProtocol>> networkProtocols       = new HashMap<String, Class<? extends ONetworkProtocol>>();
   protected Map<String, OServerSocketFactory>              networkSocketFactories = new HashMap<String, OServerSocketFactory>();
   protected List<OServerNetworkListener>                   networkListeners       = new ArrayList<OServerNetworkListener>();
@@ -161,7 +159,7 @@ public class OServer {
     try {
       shutdown();
     } finally {
-      startup(configuration);
+      startup(data.configuration);
       activate();
     }
   }
@@ -244,11 +242,11 @@ public class OServer {
     if (iInputStream == null)
       throw new OConfigurationException("Configuration file is null");
 
-    configurationLoader = new OServerConfigurationLoaderXml(OServerConfiguration.class, iInputStream);
-    configuration = configurationLoader.load();
+    data.configurationLoader = new OServerConfigurationLoaderXml(OServerConfiguration.class, iInputStream);
+    data.configuration = data.configurationLoader.load();
 
     // Startup function split to allow pre-activation changes
-    return startup(configuration);
+    return startup(data.configuration);
   }
 
   public OServer startup(final OServerConfiguration iConfiguration)
@@ -267,9 +265,9 @@ public class OServer {
     }
 
     dbPoolFactory = new OPartitionedDatabasePoolFactory();
-    dbPoolFactory.setMaxPoolSize(contextConfiguration.getValueAsInteger(OGlobalConfiguration.DB_POOL_MAX));
+    dbPoolFactory.setMaxPoolSize(data.contextConfiguration.getValueAsInteger(OGlobalConfiguration.DB_POOL_MAX));
 
-    databaseDirectory = contextConfiguration.getValue("server.database.path", serverRootDirectory + "/databases/");
+    databaseDirectory = data.contextConfiguration.getValue("server.database.path", serverRootDirectory + "/databases/");
     databaseDirectory = OFileUtils.getPath(OSystemVariableResolver.resolveSystemVariables(databaseDirectory));
     databaseDirectory = databaseDirectory.replace("//", "/");
     if (!databaseDirectory.endsWith("/"))
@@ -299,10 +297,10 @@ public class OServer {
       for (OServerLifecycleListener l : lifecycleListeners)
         l.onBeforeActivate();
 
-      if (configuration.network != null) {
+      if (data.configuration.network != null) {
         // REGISTER/CREATE SOCKET FACTORIES
-        if (configuration.network.sockets != null) {
-          for (OServerSocketFactoryConfiguration f : configuration.network.sockets) {
+        if (data.configuration.network.sockets != null) {
+          for (OServerSocketFactoryConfiguration f : data.configuration.network.sockets) {
             Class<? extends OServerSocketFactory> fClass = (Class<? extends OServerSocketFactory>) loadClass(f.implementation);
             OServerSocketFactory factory = fClass.newInstance();
             try {
@@ -315,11 +313,11 @@ public class OServer {
         }
 
         // REGISTER PROTOCOLS
-        for (OServerNetworkProtocolConfiguration p : configuration.network.protocols)
+        for (OServerNetworkProtocolConfiguration p : data.configuration.network.protocols)
           networkProtocols.put(p.name, (Class<? extends ONetworkProtocol>) loadClass(p.implementation));
 
         // STARTUP LISTENERS
-        for (OServerNetworkListenerConfiguration l : configuration.network.listeners)
+        for (OServerNetworkListenerConfiguration l : data.configuration.network.listeners)
           networkListeners.add(new OServerNetworkListener(this, networkSocketFactories.get(l.socket), l.ipAddress, l.portRange,
               l.protocol, networkProtocols.get(l.protocol), l.parameters, l.commands));
 
@@ -460,7 +458,7 @@ public class OServer {
       return stg.getURL();
 
     // SEARCH IN CONFIGURED PATHS
-    String dbURL = configuration.getStoragePath(name);
+    String dbURL = data.configuration.getStoragePath(name);
     if (dbURL == null) {
       // SEARCH IN DEFAULT DATABASE DIRECTORY
       if (new File(OIOUtils.getPathFromDatabaseName(dbPath) + "/default.pcl").exists())
@@ -476,8 +474,8 @@ public class OServer {
   public Map<String, String> getAvailableStorageNames() {
     // SEARCH IN CONFIGURED PATHS
     final Map<String, String> storages = new HashMap<String, String>();
-    if (configuration.storages != null && configuration.storages.length > 0)
-      for (OServerStorageConfiguration s : configuration.storages)
+    if (data.configuration.storages != null && data.configuration.storages.length > 0)
+      for (OServerStorageConfiguration s : data.configuration.storages)
         storages.put(OIOUtils.getDatabaseNameFromPath(s.name), s.path);
 
     // SEARCH IN DEFAULT DATABASE DIRECTORY
@@ -497,8 +495,8 @@ public class OServer {
 
   public String getStorageURL(final String iName) {
     // SEARCH IN CONFIGURED PATHS
-    if (configuration.storages != null && configuration.storages.length > 0)
-      for (OServerStorageConfiguration s : configuration.storages)
+    if (data.configuration.storages != null && data.configuration.storages.length > 0)
+      for (OServerStorageConfiguration s : data.configuration.storages)
         if (s.name.equals(iName))
           return s.path;
 
@@ -589,20 +587,20 @@ public class OServer {
   }
 
   public OServerUserConfiguration getUser(final String iUserName) {
-    return configuration.getUser(iUserName);
+    return data.configuration.getUser(iUserName);
   }
 
   public boolean existsStoragePath(final String iURL) {
-    return configuration.getStoragePath(iURL) != null;
+    return data.configuration.getStoragePath(iURL) != null;
   }
 
   public OServerConfiguration getConfiguration() {
-    return configuration;
+    return data.configuration;
   }
 
   public void saveConfiguration() throws IOException {
-    if (configurationLoader != null)
-      configurationLoader.save(configuration);
+    if (data.configurationLoader != null)
+      data.configurationLoader.save(data.configuration);
   }
 
   public Map<String, Class<? extends ONetworkProtocol>> getNetworkProtocols() {
@@ -627,7 +625,7 @@ public class OServer {
   }
 
   public OContextConfiguration getContextConfiguration() {
-    return contextConfiguration;
+    return data.contextConfiguration;
   }
 
   @SuppressWarnings("unchecked")
@@ -682,10 +680,10 @@ public class OServer {
     if (iPermissions == null || iPermissions.length() == 0)
       throw new IllegalArgumentException("User permissions null or empty");
 
-    if (configuration.users == null)
-      configuration.users = new OServerUserConfiguration[1];
+    if (data.configuration.users == null)
+      data.configuration.users = new OServerUserConfiguration[1];
     else
-      configuration.users = Arrays.copyOf(configuration.users, configuration.users.length + 1);
+      data.configuration.users = Arrays.copyOf(data.configuration.users, data.configuration.users.length + 1);
 
     if (iPassword == null) {
       // AUTO GENERATE PASSWORD
@@ -694,7 +692,7 @@ public class OServer {
       iPassword = OSecurityManager.instance().createSHA256(OSecurityManager.byteArrayToHexStr(buffer));
     }
 
-    configuration.users[configuration.users.length - 1] = new OServerUserConfiguration(iName, iPassword, iPermissions);
+    data.configuration.users[data.configuration.users.length - 1] = new OServerUserConfiguration(iName, iPassword, iPermissions);
 
     saveConfiguration();
   }
@@ -808,21 +806,21 @@ public class OServer {
   }
 
   protected void loadConfiguration(final OServerConfiguration iConfiguration) {
-    configuration = iConfiguration;
+    data.configuration = iConfiguration;
 
     // FILL THE CONTEXT CONFIGURATION WITH SERVER'S PARAMETERS
-    contextConfiguration = new OContextConfiguration();
+    data.contextConfiguration = new OContextConfiguration();
     if (iConfiguration.properties != null)
       for (OServerEntryConfiguration prop : iConfiguration.properties)
-        contextConfiguration.setValue(prop.name, prop.value);
+        data.contextConfiguration.setValue(prop.name, prop.value);
 
     hookManager = new OConfigurableHooksManager(iConfiguration);
   }
 
   protected OServerConfiguration loadConfigurationFromFile(final File iFile) {
     try {
-      configurationLoader = new OServerConfigurationLoaderXml(OServerConfiguration.class, iFile);
-      return configurationLoader.load();
+      data.configurationLoader = new OServerConfigurationLoaderXml(OServerConfiguration.class, iFile);
+      return data.configurationLoader.load();
 
     } catch (IOException e) {
       OLogManager.instance().error(this, "Error on reading server configuration from file: " + iFile, e,
@@ -832,8 +830,8 @@ public class OServer {
   }
 
   protected void loadUsers() throws IOException {
-    if (configuration.users != null && configuration.users.length > 0) {
-      for (OServerUserConfiguration u : configuration.users) {
+    if (data.configuration.users != null && data.configuration.users.length > 0) {
+      for (OServerUserConfiguration u : data.configuration.users) {
         if (u.name.equals(OServerConfiguration.SRV_ROOT_ADMIN))
           // FOUND
           return;
@@ -847,11 +845,11 @@ public class OServer {
    * Load configured storages.
    */
   protected void loadStorages() {
-    if (configuration.storages == null)
+    if (data.configuration.storages == null)
       return;
 
     String type;
-    for (OServerStorageConfiguration stg : configuration.storages)
+    for (OServerStorageConfiguration stg : data.configuration.storages)
       if (stg.loadOnStartup) {
         // @COMPATIBILITY
         if (stg.userName == null)
@@ -953,10 +951,10 @@ public class OServer {
     pluginManager.startup();
 
     // PLUGINS CONFIGURED IN XML
-    if (configuration.handlers != null) {
+    if (data.configuration.handlers != null) {
       // ACTIVATE PLUGINS
       OServerPlugin handler;
-      for (OServerHandlerConfiguration h : configuration.handlers) {
+      for (OServerHandlerConfiguration h : data.configuration.handlers) {
         if (h.parameters != null) {
           // CHECK IF IT'S ENABLED
           boolean enabled = true;

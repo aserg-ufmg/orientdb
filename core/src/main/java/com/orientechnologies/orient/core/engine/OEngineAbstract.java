@@ -27,6 +27,7 @@ import com.orientechnologies.orient.core.storage.cache.OWriteCacheIdGen;
 
 public abstract class OEngineAbstract implements OEngine {
   private static final OWriteCacheIdGen writeCacheIdGen = new OSnowFlakeIdGen();
+public static final String NAME = "remote";
 
   protected int generateStorageId() {
     return writeCacheIdGen.nextId();

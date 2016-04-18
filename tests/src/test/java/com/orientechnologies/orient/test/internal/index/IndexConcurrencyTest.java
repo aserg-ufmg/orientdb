@@ -244,7 +244,7 @@ public class IndexConcurrencyTest {
         System.out.println("Recreating database");
         if (ODatabaseHelper.existsDatabase(db, "plocal")) {
           db.setProperty("security", Boolean.FALSE);
-          ODatabaseHelper.dropDatabase(db, url, "plocal");
+          ODatabaseHelper.dropDb(db, url, "plocal");
         }
         ODatabaseHelper.createDatabase(db, url);
         db.close();

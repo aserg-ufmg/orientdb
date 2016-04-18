@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.engine.memory.OEngineMemory;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -35,7 +36,6 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import com.orientechnologies.orient.client.db.ODatabaseHelper;
-import com.orientechnologies.orient.client.remote.OEngineRemote;
 import com.orientechnologies.orient.client.remote.OServerAdmin;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
@@ -89,7 +89,7 @@ public class OSBTreeRidBagTest extends ORidBagTest {
   }
 
   public void testRidBagClusterDistribution() {
-    if (database.getStorage().getType().equals(OEngineRemote.NAME) || database.getStorage().getType().equals(OEngineMemory.NAME))
+    if (database.getStorage().getType().equals(OEngineAbstract.NAME) || database.getStorage().getType().equals(OEngineMemory.NAME))
       return;
 
     final int clusterIdOne = database.addCluster("clusterOne");
@@ -246,7 +246,7 @@ public class OSBTreeRidBagTest extends ORidBagTest {
   }
 
   public void testRidBagDelete() {
-    if (database.getStorage().getType().equals(OEngineRemote.NAME) || database.getStorage().getType().equals(OEngineMemory.NAME))
+    if (database.getStorage().getType().equals(OEngineAbstract.NAME) || database.getStorage().getType().equals(OEngineMemory.NAME))
       return;
 
     float reuseTrigger = OGlobalConfiguration.SBTREEBOSAI_FREE_SPACE_REUSE_TRIGGER.getValueAsFloat();

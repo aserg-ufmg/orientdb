@@ -35,7 +35,7 @@ import static java.util.Arrays.asList;
  * @author Roberto Franchini (CELI Srl - franchini@celi.it)
  * @author Salvatore Piccione (TXT e-solutions SpA - salvo.picci@gmail.com)
  */
-public class OrientBlob implements Blob {
+public class OrientBlob implements Blob, OrientBlobInterface {
 
   private final List<byte[]> binaryDataChunks;
 
@@ -69,7 +69,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#length()
    */
-  public long length() throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#length()
+ */
+@Override
+public long length() throws SQLException {
     return this.length;
   }
 
@@ -86,7 +90,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#getBytes(long, int)
    */
-  public byte[] getBytes(long pos, int length) throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#getBytes(long, int)
+ */
+@Override
+public byte[] getBytes(long pos, int length) throws SQLException {
     if (pos < 1)
       throw new SQLException("The position of the first byte in the BLOB value to be " + "extracted cannot be less than 1");
     if (length < 0)
@@ -144,7 +152,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#getBinaryStream()
    */
-  public InputStream getBinaryStream() throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#getBinaryStream()
+ */
+@Override
+public InputStream getBinaryStream() throws SQLException {
     return new OrientBlobInputStream();
   }
 
@@ -153,7 +165,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#position(byte[], long)
    */
-  public long position(byte[] pattern, long start) throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#position(byte[], long)
+ */
+@Override
+public long position(byte[] pattern, long start) throws SQLException {
     throw new SQLFeatureNotSupportedException();
   }
 
@@ -162,7 +178,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#position(java.sql.Blob, long)
    */
-  public long position(Blob pattern, long start) throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#position(java.sql.Blob, long)
+ */
+@Override
+public long position(Blob pattern, long start) throws SQLException {
     throw new SQLFeatureNotSupportedException();
   }
 
@@ -171,7 +191,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#setBytes(long, byte[])
    */
-  public int setBytes(long pos, byte[] bytes) throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#setBytes(long, byte[])
+ */
+@Override
+public int setBytes(long pos, byte[] bytes) throws SQLException {
     throw new SQLFeatureNotSupportedException();
   }
 
@@ -180,7 +204,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#setBytes(long, byte[], int, int)
    */
-  public int setBytes(long pos, byte[] bytes, int offset, int len) throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#setBytes(long, byte[], int, int)
+ */
+@Override
+public int setBytes(long pos, byte[] bytes, int offset, int len) throws SQLException {
     throw new SQLFeatureNotSupportedException();
   }
 
@@ -189,7 +217,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#setBinaryStream(long)
    */
-  public OutputStream setBinaryStream(long pos) throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#setBinaryStream(long)
+ */
+@Override
+public OutputStream setBinaryStream(long pos) throws SQLException {
     throw new SQLFeatureNotSupportedException();
   }
 
@@ -198,7 +230,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#truncate(long)
    */
-  public void truncate(long len) throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#truncate(long)
+ */
+@Override
+public void truncate(long len) throws SQLException {
     if (len < 0)
       throw new SQLException("The length of a BLOB cannot be a negtive number.");
     if (len < this.length)
@@ -210,7 +246,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#free()
    */
-  public void free() throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#free()
+ */
+@Override
+public void free() throws SQLException {
     binaryDataChunks.clear();
   }
 
@@ -219,7 +259,11 @@ public class OrientBlob implements Blob {
    * 
    * @see java.sql.Blob#getBinaryStream(long, long)
    */
-  public InputStream getBinaryStream(long pos, long length) throws SQLException {
+  /* (non-Javadoc)
+ * @see com.orientechnologies.orient.jdbc.OrientBlobInterface#getBinaryStream(long, long)
+ */
+@Override
+public InputStream getBinaryStream(long pos, long length) throws SQLException {
     return new OrientBlobInputStream(pos, length);
   }
 

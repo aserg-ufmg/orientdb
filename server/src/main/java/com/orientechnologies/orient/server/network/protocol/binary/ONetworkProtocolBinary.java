@@ -30,7 +30,6 @@ import com.orientechnologies.common.serialization.types.OIntegerSerializer;
 import com.orientechnologies.common.serialization.types.ONullSerializer;
 import com.orientechnologies.common.util.OCommonConst;
 import com.orientechnologies.orient.client.remote.OCollectionNetworkSerializer;
-import com.orientechnologies.orient.client.remote.OEngineRemote;
 import com.orientechnologies.orient.core.OConstants;
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.command.OCommandRequestText;
@@ -45,6 +44,7 @@ import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.db.record.ridbag.sbtree.OBonsaiCollectionPointer;
 import com.orientechnologies.orient.core.db.record.ridbag.sbtree.OSBTreeCollectionManager;
 import com.orientechnologies.orient.core.db.record.ridbag.sbtree.OSBTreeRidBag;
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.exception.OConfigurationException;
 import com.orientechnologies.orient.core.exception.ODatabaseException;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
@@ -1071,7 +1071,7 @@ public class ONetworkProtocolBinary extends OBinaryNetworkProtocolAbstract {
     else {
       // CHECK AGAINST ALL THE ENGINE TYPES, BUT REMOTE
       for (String engine : Orient.instance().getEngines()) {
-        if (!engine.equalsIgnoreCase(OEngineRemote.NAME)) {
+        if (!engine.equalsIgnoreCase(OEngineAbstract.NAME)) {
           connection.database = getDatabaseInstance(dbName, ODatabaseDocument.TYPE, engine);
           if (connection.database.exists())
             // FOUND

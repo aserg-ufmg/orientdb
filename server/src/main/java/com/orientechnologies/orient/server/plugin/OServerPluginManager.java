@@ -58,14 +58,13 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class OServerPluginManager implements OService {
   private static final int                             CHECK_DELAY   = 5000;
-  private OServer                                      server;
   private ConcurrentHashMap<String, OServerPluginInfo> activePlugins = new ConcurrentHashMap<String, OServerPluginInfo>();
   private ConcurrentHashMap<String, String>            loadedPlugins = new ConcurrentHashMap<String, String>();
   private volatile TimerTask                           autoReloadTimerTask;
-  private String                                       directory;
+  private OServerPluginManagerData data = new OServerPluginManagerData();
 
-  public void config(OServer iServer) {
-    server = iServer;
+public void config(OServer iServer) {
+    data.server = iServer;
   }
 
   @Override
@@ -73,10 +72,10 @@ public class OServerPluginManager implements OService {
     boolean hotReload = true;
     boolean dynamic = true;
     boolean loadAtStartup = true;
-    directory = OSystemVariableResolver.resolveSystemVariables("${ORIENTDB_HOME}", ".") + "/plugins/";
+    data.directory = OSystemVariableResolver.resolveSystemVariables("${ORIENTDB_HOME}", ".") + "/plugins/";
 
-    if (server.getConfiguration() != null && server.getConfiguration().properties != null)
-      for (OServerEntryConfiguration p : server.getConfiguration().properties) {
+    if (data.server.getConfiguration() != null && data.server.getConfiguration().properties != null)
+      for (OServerEntryConfiguration p : data.server.getConfiguration().properties) {
         if (p.name.equals("plugin.hotReload"))
           hotReload = Boolean.parseBoolean(p.value);
         else if (p.name.equals("plugin.dynamic"))
@@ -84,7 +83,7 @@ public class OServerPluginManager implements OService {
         else if (p.name.equals("plugin.loadAtStartup"))
           loadAtStartup = Boolean.parseBoolean(p.value);
         else if (p.name.equals("plugin.directory"))
-          directory = p.value;
+          data.directory = p.value;
       }
 
     if (!dynamic)
@@ -210,7 +209,7 @@ public class OServerPluginManager implements OService {
     if (pluginWWW == null)
       pluginWWW = iPluginData.getName();
 
-    final OServerNetworkListener httpListener = server.getListenerByProtocol(ONetworkProtocolHttpAbstract.class);
+    final OServerNetworkListener httpListener = data.server.getListenerByProtocol(ONetworkProtocolHttpAbstract.class);
 
     if (httpListener == null)
       throw new OConfigurationException("HTTP listener not registered while installing Static Content command");
@@ -266,7 +265,7 @@ public class OServerPluginManager implements OService {
 
     // CONFIG()
     final Method configMethod = classToLoad.getDeclaredMethod("config", OServer.class, OServerParameterConfiguration[].class);
-    configMethod.invoke(instance, server, params);
+    configMethod.invoke(instance, data.server, params);
 
     // STARTUP()
     final Method startupMethod = classToLoad.getDeclaredMethod("startup");
@@ -277,7 +276,7 @@ public class OServerPluginManager implements OService {
 
   private void updatePlugins() {
     // load plugins.directory from server configuration or default to $ORIENTDB_HOME/plugins
-    final File pluginsDirectory = new File(directory);
+    final File pluginsDirectory = new File(data.directory);
     if (!pluginsDirectory.exists())
       pluginsDirectory.mkdirs();
 

@@ -28,6 +28,7 @@ import com.orientechnologies.common.log.OLogManager;
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.exception.OStorageException;
 import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -53,8 +54,8 @@ public class OServerAdmin {
    * @throws IOException
    */
   public OServerAdmin(String iURL) throws IOException {
-    if (iURL.startsWith(OEngineRemote.NAME))
-      iURL = iURL.substring(OEngineRemote.NAME.length() + 1);
+    if (iURL.startsWith(OEngineAbstract.NAME))
+      iURL = iURL.substring(OEngineAbstract.NAME.length() + 1);
 
     if (!iURL.contains("/"))
       iURL += "/";

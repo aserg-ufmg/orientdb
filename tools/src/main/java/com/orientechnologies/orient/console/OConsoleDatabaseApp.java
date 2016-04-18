@@ -27,7 +27,6 @@ import com.orientechnologies.common.exception.OException;
 import com.orientechnologies.common.io.OIOException;
 import com.orientechnologies.common.listener.OProgressListener;
 import com.orientechnologies.common.log.OLogManager;
-import com.orientechnologies.orient.client.remote.OEngineRemote;
 import com.orientechnologies.orient.client.remote.OServerAdmin;
 import com.orientechnologies.orient.client.remote.OStorageRemoteThread;
 import com.orientechnologies.orient.core.OConstants;
@@ -49,6 +48,7 @@ import com.orientechnologies.orient.core.db.tool.ODatabaseExport;
 import com.orientechnologies.orient.core.db.tool.ODatabaseExportException;
 import com.orientechnologies.orient.core.db.tool.ODatabaseImport;
 import com.orientechnologies.orient.core.db.tool.ODatabaseImportException;
+import com.orientechnologies.orient.core.engine.OEngineAbstract;
 import com.orientechnologies.orient.core.exception.ODatabaseException;
 import com.orientechnologies.orient.core.exception.ORetryQueryException;
 import com.orientechnologies.orient.core.id.ORID;
@@ -311,7 +311,7 @@ public class OConsoleDatabaseApp extends OrientConsole implements OCommandOutput
     if (iUserPassword == null)
       iUserPassword = OUser.ADMIN;
     if (iStorageType == null) {
-      if (iDatabaseURL.startsWith(OEngineRemote.NAME + ":"))
+      if (iDatabaseURL.startsWith(OEngineAbstract.NAME + ":"))
         throw new IllegalArgumentException("Missing storage type for remote database");
 
       int pos = iDatabaseURL.indexOf(":");
@@ -327,9 +327,9 @@ public class OConsoleDatabaseApp extends OrientConsole implements OCommandOutput
     currentDatabaseUserName = iUserName;
     currentDatabaseUserPassword = iUserPassword;
 
-    if (iDatabaseURL.startsWith(OEngineRemote.NAME)) {
+    if (iDatabaseURL.startsWith(OEngineAbstract.NAME)) {
       // REMOTE CONNECTION
-      final String dbURL = iDatabaseURL.substring(OEngineRemote.NAME.length() + 1);
+      final String dbURL = iDatabaseURL.substring(OEngineAbstract.NAME.length() + 1);
       new OServerAdmin(dbURL).connect(iUserName, iUserPassword).createDatabase(iDatabaseType, iStorageType).close();
       connect(iDatabaseURL, OUser.ADMIN, OUser.ADMIN);
 
@@ -615,7 +615,7 @@ public class OConsoleDatabaseApp extends OrientConsole implements OCommandOutput
 
     final String dbName = currentDatabase.getName();
 
-    if (currentDatabase.getURL().startsWith(OEngineRemote.NAME)) {
+    if (currentDatabase.getURL().startsWith(OEngineAbstract.NAME)) {
       if (storageType == null)
         storageType = "plocal";
 
@@ -637,7 +637,7 @@ public class OConsoleDatabaseApp extends OrientConsole implements OCommandOutput
 
     final String dbName = currentDatabase.getName();
 
-    if (currentDatabase.getURL().startsWith(OEngineRemote.NAME)) {
+    if (currentDatabase.getURL().startsWith(OEngineAbstract.NAME)) {
       if (storageType == null)
         storageType = "plocal";
 
@@ -887,7 +887,7 @@ public class OConsoleDatabaseApp extends OrientConsole implements OCommandOutput
 
     final String dbName = currentDatabase.getName();
 
-    if (currentDatabase.getURL().startsWith(OEngineRemote.NAME)) {
+    if (currentDatabase.getURL().startsWith(OEngineAbstract.NAME)) {
       if (serverAdmin == null) {
         message("\n\nCannot drop a remote database without connecting to the server with a valid server's user");
         return;
@@ -897,7 +897,7 @@ public class OConsoleDatabaseApp extends OrientConsole implements OCommandOutput
         storageType = "plocal";
 
       // REMOTE CONNECTION
-      final String dbURL = currentDatabase.getURL().substring(OEngineRemote.NAME.length() + 1);
+      final String dbURL = currentDatabase.getURL().substring(OEngineAbstract.NAME.length() + 1);
       new OServerAdmin(dbURL).connect(currentDatabaseUserName, currentDatabaseUserPassword).dropDatabase(storageType);
     } else {
       // LOCAL CONNECTION
@@ -917,9 +917,9 @@ public class OConsoleDatabaseApp extends OrientConsole implements OCommandOutput
       @ConsoleParameter(name = "storage-type", description = "Storage type of server database", optional = true) String storageType)
           throws IOException {
 
-    if (iDatabaseURL.startsWith(OEngineRemote.NAME)) {
+    if (iDatabaseURL.startsWith(OEngineAbstract.NAME)) {
       // REMOTE CONNECTION
-      final String dbURL = iDatabaseURL.substring(OEngineRemote.NAME.length() + 1);
+      final String dbURL = iDatabaseURL.substring(OEngineAbstract.NAME.length() + 1);
 
       if (serverAdmin != null)
         serverAdmin.close();

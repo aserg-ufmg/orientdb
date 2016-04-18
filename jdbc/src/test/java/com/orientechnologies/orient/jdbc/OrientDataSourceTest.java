@@ -23,7 +23,7 @@ public class OrientDataSourceTest extends OrientJdbcBaseTest {
     @Test
     public void shouldConnect() throws SQLException {
 
-        OrientDataSource ds = new OrientDataSource();
+        OrientDataCoude ds = new OrientDataCoude();
         ds.setUrl("jdbc:orient:memory:test");
         ds.setUsername("admin");
         ds.setPassword("admin");
@@ -44,7 +44,7 @@ public class OrientDataSourceTest extends OrientJdbcBaseTest {
         info.setProperty("db.pool.min", "1");
         info.setProperty("db.pool.max", "1");
 
-        final OrientDataSource ds = new OrientDataSource("jdbc:orient:memory:test", "admin", "admin", info);
+        final OrientDataCoude ds = new OrientDataCoude("jdbc:orient:memory:test", "admin", "admin", info);
 
         //pool size is 1: database should be the same on different connection
         //NOTE: not safe in production!
@@ -73,7 +73,7 @@ public class OrientDataSourceTest extends OrientJdbcBaseTest {
         info.setProperty("db.pool.min", "1");
         info.setProperty("db.pool.max", "10");
 
-        final OrientDataSource ds = new OrientDataSource();
+        final OrientDataCoude ds = new OrientDataCoude();
         ds.setUrl("jdbc:orient:memory:test");
         ds.setUsername("admin");
         ds.setPassword("admin");

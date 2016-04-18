@@ -36,8 +36,6 @@ import com.orientechnologies.orient.core.storage.impl.local.paginated.OLocalPagi
  * @since 28.03.13
  */
 public class OEngineLocalPaginated extends OEngineAbstract {
-  public static final String NAME = "plocal";
-
   private final O2QCache     readCache;
 
   public OEngineLocalPaginated() {
